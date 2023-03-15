@@ -31,7 +31,8 @@ def devide(trn_ratings, tst_ratings, trn_reviews, tst_reviews):
         total_awesomeness['awesomeness'] = total_awesomeness['awesomeness'].apply(lambda x: 1 if x > awesome_threshold else 0)
         ratio_ones = total_awesomeness['awesomeness'].value_counts(normalize=True)[1]
         print(f"awesome_threshold: {awesome_threshold}, ratio of awesome product: {ratio_ones}")
-        if 0.42 < ratio_ones < 0.58:
+        if 0.45 < ratio_ones < 0.55:
+            print("successfully found balance")
             break
     # drop overall and merge to total df 
     merged_df = total_df.drop('overall', axis=1).merge(total_awesomeness, on=['asin'])
