@@ -1,5 +1,6 @@
 import json 
 import matplotlib.pyplot as plt
+import numpy as np
 import pandas as pd
 
 def load_ratings(folder, category):
@@ -20,12 +21,18 @@ def devide(trn_ratings, tst_ratings, trn_reviews, tst_reviews):
     # contact
     total_df = pd.concat([trn_df, tst_df]).reset_index(drop=True)
     # get awesomenss 
-    awesome_threshold = 4.5
-    total_awesomeness = total_df.groupby('asin')\
-        .apply(lambda x: 0.0 if x['verified'].sum() == 0 else (x['overall'] * x['verified']).sum() / x['verified'].sum())\
-        .rename('awesomeness')\
-        .reset_index()
-    total_awesomeness['awesomeness'] = total_awesomeness['awesomeness'].apply(lambda x: 1 if x > awesome_threshold else 0)
+    t_list = [4.3, 4.4, 4.5, 4.6, 4.7, 3.8, 3.9, 4.0, 4.1, 4.2, 3.5, 3.6, 3.7, 4.8, 4.9, 5.0 ]
+    for t in t_list:
+        awesome_threshold = round(t,3)
+        total_awesomeness = total_df.groupby('asin')\
+            .apply(lambda x: 0.0 if x['verified'].sum() == 0 else (x['overall'] * x['verified']).sum() / x['verified'].sum())\
+            .rename('awesomeness')\
+            .reset_index()
+        total_awesomeness['awesomeness'] = total_awesomeness['awesomeness'].apply(lambda x: 1 if x > awesome_threshold else 0)
+        ratio_ones = total_awesomeness['awesomeness'].value_counts(normalize=True)[1]
+        print(f"awesome_threshold: {awesome_threshold}, ratio of awesome product: {ratio_ones}")
+        if 0.42 < ratio_ones < 0.58:
+            break
     # drop overall and merge to total df 
     merged_df = total_df.drop('overall', axis=1).merge(total_awesomeness, on=['asin'])
     # devide
@@ -49,7 +56,7 @@ def plot_awssomeness(train0, test1, test2, test3, data_category):
     plot_single(ax2, test2, f"test2 of {data_category}")
     plot_single(ax3, test3, f"test3 of {data_category}")
     # save the plot
-    plt.savefig(f'{data_category}.png')
+    plt.savefig(f'./plots/{data_category}.png')
     return
 
 def save_data(train0, test1, test2, test3, data_category):
