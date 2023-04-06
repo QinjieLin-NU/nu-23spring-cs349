@@ -22,6 +22,12 @@ def devide(trn_ratings, tst_ratings, trn_reviews, tst_reviews):
     total_df = pd.concat([trn_df, tst_df]).reset_index(drop=True)
     # get awesomenss 
     t_list = [4.3, 4.4, 4.5, 4.6, 4.7, 3.8, 3.9, 4.0, 4.1, 4.2, 3.5, 3.6, 3.7, 4.8, 4.9, 5.0 ]
+    t_list = [ 4.3 , 4.35, 4.4 , 4.45, 4.5 , 4.55,
+          4.6 , 4.65, 4.7 , 4.75, 4.8 ,
+          3.8 , 3.85, 3.9 , 3.95, 4.  ,
+          4.05, 4.1 , 4.15, 4.2 , 4.25, 
+          3.5 , 3.55, 3.6 , 3.65, 3.7 , 3.75,
+          4.85, 4.9 , 4.95, 5.  ,]
     for t in t_list:
         awesome_threshold = round(t,3)
         total_awesomeness = total_df.groupby('asin')\
@@ -41,6 +47,11 @@ def devide(trn_ratings, tst_ratings, trn_reviews, tst_reviews):
     test_data_1 = merged_df.drop(train_data.index).sample(frac=1/3, random_state=42)
     test_data_2 = merged_df.drop(train_data.index).drop(test_data_1.index).sample(frac=1/3, random_state=42)
     test_data_3 = merged_df.drop(train_data.index).drop(test_data_1.index).drop(test_data_2.index)
+    #reset index
+    train_data = train_data.reset_index(drop=True)
+    test_data_1 = test_data_1.reset_index(drop=True)
+    test_data_2 = test_data_2.reset_index(drop=True)
+    test_data_3 = test_data_3.reset_index(drop=True)
     return train_data, test_data_1, test_data_2, test_data_3
     
 def plot_single(ax_n, input_df, label):
